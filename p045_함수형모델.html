@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ko">
+54
+    <script>
+      /* 함수형 모델 API */
+      const input = tf.input({ shape: [784] });
+      const dense1 = tf.layers
+        .dense({ units: 16, actibation: "relu" })
+        .apply(input);
+      const dense2 = tf.layers
+        .dense({ units: 10, actibation: "softmax" })
+        .apply(dense1);
+      const model = tf.model({ inputs: input, outputs: dense2 });
+
+      // console.log(model.layers);
+      // console.log(model.inputLayers);
+      // console.log(model.outputLayers);
+      model.summary(); // 요약
+    </script>
+  </body>
+</html>
