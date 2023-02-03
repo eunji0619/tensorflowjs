@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tensorflowjs</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+  </head>
+  <body>
+    <script>
+      //온도별 음료 판매량
+      /*1. 지도학습 과거데이터*/
+      const tn = tf.tensor([29]);
+      let tem = [25, 26, 27, 28, 29];
+      let sel = [69, 72, 75, 78, tn];
+      //   let tem = [25, 26, 27, 28];
+      // let sel = [50, 52, 54, 56];
+      let xt = tf.tensor(tem);
+      let yt = tf.tensor(sel);
+
+      /*2. 모델의 모양 만들기*/
+      let X = tf.input({ shape: [1] }); //값 하나 얻어오기
+      let Y = tf.layers.dense({ units: 1 }).apply(X); //apply를 통해 연결
+      let model = tf.model({ inputs: X, outputs: Y }); //인, 아웃풋 지정
+
+      //컴파일을 무조건 해주어야 함
+      let compileParam = {
+        optimizer: tf.train.adam(),
+        loss: tf.losses.meanSquaredError,
+      }; //최적화의 loss 측정방법 종류
+      model.compile(compileParam); //컴파일
+
+      /*3. 데이터 학습 시키기*/
+      const fitParam = {
+        epochs: 2000,
+        callbacks: {
+          onEpochEnd: function (epoch, logs) {
+            console.log("epoch", epoch, logs, "RMSE=>", Math.sqrt(logs.loss));
+          },
+        },
+      };
+      //   model.fit(xt, yt).then((_) => {
+      //     let result = model.predict(xt);
+      //     result.print();
+      //   });
+      model.fit(xt, yt).then((_) => {
+        let result = model.predict(tn);
+        result.print();
+      });
+    </script>
+  </body>
+</html>
